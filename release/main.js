@@ -81,11 +81,9 @@ function reportErrors(errors, typescript, ignore = []) {
 (function (compile) {
     compile.reporter = _reporter;
     function createProject(fileNameOrSettings, settings, options) {
-        // 调整项目的根目录地址
-        let context = (options || {}).context
         let tsConfigFileName = undefined;
         let tsConfigContent = undefined;
-        let projectDirectory = context || process.cwd();
+        let projectDirectory = process.cwd();
         let typescript;
         let compilerOptions;
         let projectReferences;
@@ -95,7 +93,11 @@ function reportErrors(errors, typescript, ignore = []) {
             if (typeof fileNameOrSettings === 'string') {
                 fileName = fileNameOrSettings;
                 tsConfigFileName = path.resolve(process.cwd(), fileName);
-                projectDirectory = path.dirname(tsConfigFileName);
+                // 调整项目的根目录地址
+                // 如果开发者使用的tsconfig不再命令执行的文件路径下，可以配置context属性，控制组件根目录地址
+                // 用于实现封装 tsconfig.json 配置文件
+                let context = (options || {}).context
+                projectDirectory = context || path.dirname(tsConfigFileName);
                 if (settings === undefined)
                     settings = {};
             }
