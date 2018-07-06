@@ -80,10 +80,12 @@ function reportErrors(errors, typescript, ignore = []) {
 }
 (function (compile) {
     compile.reporter = _reporter;
-    function createProject(fileNameOrSettings, settings) {
+    function createProject(fileNameOrSettings, settings, options) {
+        // 调整项目的根目录地址
+        let context = (options || {}).context
         let tsConfigFileName = undefined;
         let tsConfigContent = undefined;
-        let projectDirectory = process.cwd();
+        let projectDirectory = context || process.cwd();
         let typescript;
         let compilerOptions;
         let projectReferences;
